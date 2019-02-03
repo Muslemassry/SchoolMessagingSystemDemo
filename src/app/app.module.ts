@@ -10,6 +10,7 @@ import { RegisterComponent } from './register/register.component';
 import { MessagesComponent } from './messages/messages.component';
 import { MessageComponent } from './message/message.component';
 import { StudentsComponent } from './students/students.component';
+import { HomeComponent } from './home/home.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { StudentsComponent } from './students/students.component';
     RegisterComponent,
     MessagesComponent,
     MessageComponent,
-    StudentsComponent
+    StudentsComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

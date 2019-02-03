@@ -11,6 +11,8 @@ import { MessagesComponent } from './messages/messages.component';
 import { MessageComponent } from './message/message.component';
 import { StudentsComponent } from './students/students.component';
 import { HomeComponent } from './home/home.component';
+import { ElementsComponent } from './elements/elements.component';
+import { IndexComponent } from './index/index.component';
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import { HomeComponent } from './home/home.component';
     MessagesComponent,
     MessageComponent,
     StudentsComponent,
-    HomeComponent
+    HomeComponent,
+    ElementsComponent,
+    IndexComponent
   ],
   imports: [
     BrowserModule,

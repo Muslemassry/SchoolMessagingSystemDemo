@@ -7,14 +7,10 @@ import {StudentsComponent} from './students/students.component';
 import {MessagesComponent} from './messages/messages.component';
 import {MessageComponent} from './message/message.component';
 
-const routes: Routes = [];
+import {ElementsComponent} from './elements/elements.component';
+import {IndexComponent} from './index/index.component';
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {
-  private routes: Routes = [
+const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
     {path: 'home', component: HomeComponent},
     {path: 'studentLogin', component: LoginComponent},
@@ -24,5 +20,13 @@ export class AppRoutingModule {
     {path: 'students', component: StudentsComponent},
     {path: 'messages', component: MessagesComponent},
     {path: 'message', component: MessageComponent},
-  ];
+    {path: 'elements', component: ElementsComponent},
+    {path: 'index', component: IndexComponent}
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {
  }

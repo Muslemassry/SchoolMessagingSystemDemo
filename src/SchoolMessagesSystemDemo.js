@@ -11,6 +11,9 @@ var message = db.addCollection('message');
 message.insert({id:1, createdBy: 1, sentTo: 2, isRead: 'F', messageContent: 'First Message'});
 message.insert({id:2, createdBy: 1, sentTo: 3, isRead: 'F', messageContent: 'Second Message'});
 
+// var results = message.find({sentTo:2});
+// console.log(results);
+
 // implement dao layer
 var SystemDAO = (function (){
 	function x() {};
@@ -93,7 +96,7 @@ schoolMessagesSystemApp.post('/admin', function (req, res) {
 });
 
 schoolMessagesSystemApp.get('/studentMessages', function (req, res) {
-   var messages = systemDAO.getStudentMessages({id:req.query.studentId});
+   var messages = systemDAO.getStudentMessages({id:parseInt(req.query.studentId, 10)});
    res.send(messages);
 });
 

@@ -9,19 +9,21 @@ import {MessageComponent} from './message/message.component';
 
 import {ElementsComponent} from './elements/elements.component';
 import {IndexComponent} from './index/index.component';
+import {TemplateComponent} from './template/template.component';
 
 const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
     {path: 'home', component: HomeComponent},
     {path: 'studentLogin', component: LoginComponent},
     {path: 'adminLogin', component: LoginComponent},
-    {path: 'adminLogin', component: LoginComponent},
     {path: 'register', component: RegisterComponent},
     {path: 'students', component: StudentsComponent},
     {path: 'messages', component: MessagesComponent},
     {path: 'message', component: MessageComponent},
     {path: 'elements', component: ElementsComponent},
-    {path: 'index', component: IndexComponent}
+    {path: 'index', component: IndexComponent},
+    {path: 'template', component: TemplateComponent}
+
 ];
 
 @NgModule({

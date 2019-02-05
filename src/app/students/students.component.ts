@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {SystemServiceService} from '../system-service.service';
+import {Person} from '../classes';
 
 @Component({
   selector: 'app-students',
@@ -7,9 +9,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StudentsComponent implements OnInit {
 
-  constructor() { }
+  systemStudents: Person[];
+  constructor(private systemServiceService: SystemServiceService) { }
 
   ngOnInit() {
+  }
+
+  getStudents() {
+    this.systemServiceService.getStudents
   }
 
 }

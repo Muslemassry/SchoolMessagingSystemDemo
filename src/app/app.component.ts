@@ -6,5 +6,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+ 
+  isVisible: boolean = false;
+
   title = 'schoolMessagingSystemDemo';
+  
+
+
+  toggleMenuClass(){
+    this.isVisible = !this.isVisible;
+  }
 }

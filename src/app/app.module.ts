@@ -13,6 +13,8 @@ import { StudentsComponent } from './students/students.component';
 import { HomeComponent } from './home/home.component';
 import { ElementsComponent } from './elements/elements.component';
 import { IndexComponent } from './index/index.component';
+import { TemplateComponent } from './template/template.component';
+import { MatTabsModule, MatSidenavModule, MatListModule } from '@angular/material';
 
 
 @NgModule({
@@ -25,13 +27,15 @@ import { IndexComponent } from './index/index.component';
     StudentsComponent,
     HomeComponent,
     ElementsComponent,
-    IndexComponent
+    IndexComponent,
+    TemplateComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

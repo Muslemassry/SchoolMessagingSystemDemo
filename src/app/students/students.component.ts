@@ -13,10 +13,10 @@ export class StudentsComponent implements OnInit {
   constructor(private systemServiceService: SystemServiceService) { }
 
   ngOnInit() {
+    this.getStudents();
   }
 
   getStudents() {
-    this.systemServiceService.getStudents
+    this.systemServiceService.getStudents().subscribe(students => this.systemStudents = students);
   }
-
 }

@@ -23,18 +23,14 @@ export class SystemService {
       .pipe(tap(_ => this.log('fetched student')), catchError(this.handleError('getStudents', [])));
   };
 
-  getStudentMessages(studentId: number):Observable<Message[]> {
-    console.log(`${studentId}`);
-    console.log(`${studentId}`);
-    console.log(`${studentId}`);
-    console.log(`${studentId}`);
+  getStudentMessages(studentId: string):Observable<Message[]> {
     return this.http.get<Message[]>(`${this.messagingSystemUrl}`+'/studentMessages?studentId='+ `${studentId}`)
       .pipe(tap(_ => this.log('fetched message')), catchError(this.handleError('getStudentMessages', [])));
   };
 
-  getMessage(messageId: number):Observable<Message[]> {
-    return this.http.get<Message[]>(`${this.messagingSystemUrl}`+'/message?messageId='+ `${messageId}`)
-      .pipe(tap(_ => this.log('fetched message')), catchError(this.handleError('getMessage', [])));
+  getMessage(messageId: string):Observable<Message> {
+    return this.http.get<Message>(`${this.messagingSystemUrl}`+'/message?messageId='+ `${messageId}`)
+      .pipe(tap((msg: Message) => this.log(`fetched message w/ id=${msg.id}`)), catchError(this.handleError<Message>('getMessage')));
   };
 
   doAdminLogin(admin: Person):Observable<any> {

@@ -1,8 +1,8 @@
 <body class="subpage">
   <link rel="stylesheet" href="../assets/css/main.css" />
   <!-- Main -->
-  {{currentId}}
-  {{username}}
+  currentId is {{currentId}}.
+  username is {{username}}.
     <section id="main" class="wrapper">
       <div class="inner">
         <header class="align-center">
@@ -16,7 +16,7 @@
         <hr class="major" />
         <br/>
             <div class="12u$">
-                <textarea name="message" id="message" placeholder="Enter your message" rows="6"></textarea>
+                <textarea name="message" id="message" placeholder="Enter your message" rows="6">{{currentMessage}}</textarea>
               </div>
       </div>
     </section>

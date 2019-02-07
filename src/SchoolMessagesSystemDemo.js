@@ -111,7 +111,9 @@ schoolMessagesSystemApp.get('/studentMessages', function (req, res) {
 });
 
 schoolMessagesSystemApp.get('/message', function (req, res) {
-	var message = systemDAO.getMessage({id: req.query.messageId})
+	console.log('the passed id is ', req.query.messageId);
+	var message = systemDAO.getMessage({id: parseInt(req.query.messageId, 10)});
+	console.log(message);
    	res.send(message);
 });
 

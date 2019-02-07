@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SystemService } from '../system-service.service';
+import { ActivatedRoute } from '@angular/router';
+
 import { Message } from '../classes';
 
 @Component({
@@ -9,9 +11,9 @@ import { Message } from '../classes';
 })
 export class MessagesComponent implements OnInit {
   currentMessages : Message[];
-  private studentId : number;
-  constructor(private theSystemService : SystemService) {
-    this.studentId = 3;
+  private studentId : string;
+  constructor(private theSystemService : SystemService, private route : ActivatedRoute) {
+    this.studentId = this.route.snapshot.paramMap.get('studentId');
    }
 
   ngOnInit() {

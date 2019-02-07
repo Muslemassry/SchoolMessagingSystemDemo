@@ -22,12 +22,14 @@
                   <tr>
                     <th>Id</th>
                     <th>Message</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let message of currentMessages">
                       <td>{{message.id}}</td>
                       <td>{{message.messageContent}}</td>
+                      <td><a class="button small" routerLink="/message/{{message.id}}">Open</a></td>
                     </tr>
                 </tbody>
                 <!--

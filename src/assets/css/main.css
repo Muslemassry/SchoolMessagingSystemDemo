@@ -2718,7 +2718,7 @@
 				display: inline-block;
 			}
 
-				#header nav a[href="#menu"] {
+				#header nav a[id="headMenu"] {
 					text-decoration: none;
 					-webkit-tap-highlight-color: transparent;
 					font-size: 2em;
@@ -2726,7 +2726,7 @@
 					z-index: 10005;
 				}
 
-					#header nav a[href="#menu"]:before {
+					#header nav a[id="headMenu"]:before {
 						content: "";
 						-moz-osx-font-smoothing: grayscale;
 						-webkit-font-smoothing: antialiased;
@@ -2736,11 +2736,11 @@
 						text-transform: none !important;
 					}
 
-					#header nav a[href="#menu"] span {
+					#header nav a[id="headMenu"] span {
 						display: none;
 					}
 
-					#header nav a[href="#menu"]:before {
+					#header nav a[id="headMenu"]:before {
 						margin: 0 0.5em 0 0;
 					}
 
@@ -2760,7 +2760,7 @@
 				text-align: center;
 			}
 
-			#header nav a[href="#menu"] {
+			#header nav a[id="headMenu"] {
 				font-size: 1.5em;
 			}
 

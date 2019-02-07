@@ -52,10 +52,13 @@ var SystemDAO = (function (){
 			item.password = 'XYX';
 		});
 
+		console.log(allStudents);
+
 		return allStudents;
 	};
 
 	x.prototype.getStudentMessages = function (loggedinStudent) {
+		console.log(loggedinStudent);
 		return message.find({sentTo: loggedinStudent.id});
 	};
 
@@ -77,6 +80,13 @@ var systemDAO = new SystemDAO();
 // implement service layer
 var express = require('express');
 var schoolMessagesSystemApp = express();
+
+schoolMessagesSystemApp.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+  });
+
 schoolMessagesSystemApp.post('/student', function (req, res) {
 	var loggedInStudent = systemDAO.getStudent({username: req.body.username, password: req.body.password});
 	if(loggedInStudent) {

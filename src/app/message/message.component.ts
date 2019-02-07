@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { SystemService } from '../system-service.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-message',
@@ -6,10 +8,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./message.component.css']
 })
 export class MessageComponent implements OnInit {
-
-  constructor() { }
+  currentId : string;
+  username : string;
+  constructor(private systemService : SystemService, private route : ActivatedRoute) { }
 
   ngOnInit() {
+    this.currentId = this.route.snapshot.paramMap.get('id');
+    this.username = this.route.snapshot.paramMap.get('username');
   }
 
 }

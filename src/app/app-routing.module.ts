@@ -19,7 +19,7 @@ const routes: Routes = [
     {path: 'register', component: RegisterComponent},
     {path: 'students', component: StudentsComponent},
     {path: 'messages', component: MessagesComponent},
-    {path: 'message', component: MessageComponent},
+    {path: 'message/:id/:username', component: MessageComponent},
     {path: 'elements', component: ElementsComponent},
     {path: 'index', component: IndexComponent},
     {path: 'template', component: TemplateComponent}

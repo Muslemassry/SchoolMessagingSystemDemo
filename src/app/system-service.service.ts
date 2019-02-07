@@ -8,7 +8,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class SystemServiceService {
+export class SystemService {
   private messagingSystemUrl = 'http://localhost:8083';
   private httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })};
   
@@ -18,12 +18,16 @@ export class SystemServiceService {
 
   // add the services
   getStudents():Observable<Person[]> {
-    console.log(`${this.messagingSystemUrl}`+'/students?callback=foo');
+    console.log(`${this.messagingSystemUrl}`+'/students');
     return this.http.get<Person[]>(`${this.messagingSystemUrl}`+'/students')
       .pipe(tap(_ => this.log('fetched student')), catchError(this.handleError('getStudents', [])));
   };
 
   getStudentMessages(studentId: number):Observable<Message[]> {
+    console.log(`${studentId}`);
+    console.log(`${studentId}`);
+    console.log(`${studentId}`);
+    console.log(`${studentId}`);
     return this.http.get<Message[]>(`${this.messagingSystemUrl}`+'/studentMessages?studentId='+ `${studentId}`)
       .pipe(tap(_ => this.log('fetched message')), catchError(this.handleError('getStudentMessages', [])));
   };

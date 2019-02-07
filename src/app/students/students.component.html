@@ -25,14 +25,16 @@
                     <th>name</th>
                     <th>Username</th>
                     <th>email</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let student of systemStudents">
-                    <td>student.id</td>
-                    <td>student.name</td>
-                    <td>student.username</td>
-                    <td>student.email</td>
+                    <td>{{student.id}}</td>
+                    <td>{{student.name}}</td>
+                    <td>{{student.username}}</td>
+                    <td>{{student.email}}</td>
+                    <td><a class="button small" routerLink="/message/{{student.id}}/{{student.username}}">Send to</a></td>
                   </tr>
                 </tbody>
                 <tfoot>

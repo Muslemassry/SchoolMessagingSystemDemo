@@ -8,15 +8,7 @@
 <header id="header">
         
     <nav class="left" (click)="toggleMenuClass()">
-      <a><span>Menu</span></a>
-      <!-- <ul class="links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="generic.html">Generic</a></li>
-          <li><a href="elements.html">Elements</a></li>
-        </ul>
-        <ul class="actions vertical">
-          <li><a href="#" class="button fit">Login</a></li>
-        </ul> -->
+      <a id="headMenu"><span >Menu</span></a>
     </nav>
     <a href="index.html" class="logo">intensify</a>
     <nav class="right">
@@ -26,9 +18,9 @@
 
     <nav id="menu"  [ngClass]="{'visible': isVisible}">
     <ul class="links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="generic.html">Generic</a></li>
-      <li><a href="elements.html">Elements</a></li>
+      <li><a routerLink="/index">index</a></li>
+      <li><a routerLink="/elements">elements</a></li>
+      <li><a routerLink="/home">home</a></li>
     </ul>
     <ul class="actions vertical">
       <li><a href="#" class="button fit">Login</a></li>

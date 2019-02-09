@@ -23,14 +23,14 @@ export class SystemService {
       .pipe(tap(_ => this.log('fetched student')), catchError(this.handleError('getStudents', [])));
   };
 
-  getStudentMessages(studentId: string):Observable<Message[]> {
-    return this.http.get<Message[]>(`${this.messagingSystemUrl}`+'/studentMessages?studentId='+ `${studentId}`)
+  getStudentMessages():Observable<Message[]> {
+    return this.http.get<Message[]>(`${this.messagingSystemUrl}`+'/studentMessages', this.httpOptions)
       .pipe(tap(_ => this.log('fetched message')), catchError(this.handleError('getStudentMessages', [])));
   };
 
   getMessage(messageId: string):Observable<Message> {
     return this.http.get<Message>(`${this.messagingSystemUrl}`+'/message?messageId='+ `${messageId}`)
-      .pipe(tap((msg: Message) => this.log(`fetched message w/ id=${msg.id}`)), catchError(this.handleError<Message>('getMessage')));
+      .pipe(tap((msg: Message) => this.log('fetched message')), catchError(this.handleError<Message>('getMessage')));
   };
 
   doAdminLogin(admin: Person):Observable<any> {
@@ -45,7 +45,8 @@ export class SystemService {
         catchError(this.handleError<Person>('doStudentLogin')));
   };
 
-  doStudentRegister(newStudent: Person):Observable<any> {
+  doStudentRegister(newStudent: Person):Observable<Person> {
+    console.log(newStudent);
     return this.http.put<Person>(this.messagingSystemUrl+'/student', newStudent, this.httpOptions)
       .pipe(tap((addedStudent: Person) => this.log(`newly registered student w/ username=${addedStudent.username} and id=${addedStudent.id}`)), 
         catchError(this.handleError<Person>('doStudentRegister')));
@@ -53,7 +54,7 @@ export class SystemService {
 
   doAddNewMessage(newMessage: Message):Observable<any> {
     return this.http.put<Message>(this.messagingSystemUrl+'/message', newMessage, this.httpOptions)
-      .pipe(tap((addedMessage: Message) => this.log(`newly added message w/ addedMessageid=${addedMessage.id}`)), 
+      .pipe(tap((addedMessage: Message) => this.log('newly added message')), 
         catchError(this.handleError<Person>('doAddNewMessage')));
   }
 

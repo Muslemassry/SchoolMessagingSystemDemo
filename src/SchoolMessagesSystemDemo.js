@@ -8,8 +8,8 @@ person.insert({id:2, name:'User One', username: 'userone', email: 'userone@schoo
 person.insert({id:3, name:'User Two', username: 'usertwo', email: 'usertwo@schoolMessagesSystem', password: '1234', isAdmin: 'F'});
 
 var message = db.addCollection('message');
-message.insert({id:1, createdBy: 1, sentTo: 2, isRead: 'F', messageContent: 'First Message'});
-message.insert({id:2, createdBy: 1, sentTo: 3, isRead: 'F', messageContent: 'Second Message'});
+message.insert({id:1, createdBy: 1, sentTo: 2, isRead: 'F', messageContent: 'First Message and Second 123456789456'});
+message.insert({id:2, createdBy: 1, sentTo: 3, isRead: 'F', messageContent: 'Second Message and Three 123456789456'});
 
 // var results = message.find({sentTo:2});
 // console.log(results);
@@ -40,6 +40,14 @@ var SystemDAO = (function (){
 
 	x.prototype.getStudent = function (loggingStudent) {
 		return person.find({username: loggingStudent.username, password: loggingStudent.password, isAdmin: 'F'});
+	};
+
+	x.prototype.getPersonById = function (personId) {
+		return person.find({id: personId});
+	};
+
+	x.prototype.getPersonByUsername = function (username) {
+		return person.find({username: username});
 	};
 
 	x.prototype.getAdmin = function (loggingAdmin) {
@@ -78,72 +86,206 @@ var SystemDAO = (function (){
 var systemDAO = new SystemDAO();
 
 // implement service layer
+var bodyParser = require('body-parser');
+
 var express = require('express');
 var schoolMessagesSystemApp = express();
+// parse application/x-www-form-urlencoded
+schoolMessagesSystemApp.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+schoolMessagesSystemApp.use(bodyParser.json());
+
+var jwt = require('jsonwebtoken');
+var bcrypt = require('bcryptjs');
+var config = require('./config');
 
 schoolMessagesSystemApp.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
 	next();
   });
 
+  // to log-in a student
 schoolMessagesSystemApp.post('/student', function (req, res) {
-	var loggedInStudent = systemDAO.getStudent({username: req.body.username, password: req.body.password});
-	if(loggedInStudent) {
-		oggedInStudent.password = '';
-	}
+	if (!req.body.password) {
+		res.status(200).send({ auth: false, token: undefined, username: undefined, isAdmin : false });
+		return;
+	}  
 
-   	res.send(loggedInStudent);
+	var hashedPassword = bcrypt.hashSync(req.body.password, 8);
+	var loggedInStudent = systemDAO.getStudent({username: req.body.username, password: hashedPassword });
+	
+	if(loggedInStudent) {
+		var token = jwt.sign({ id: loggedInStudent.id }, config.secret, {expiresIn: 86400});
+		res.status(200).send({ auth: false, token: token, username: loggedInStudent.username, isAdmin : false });
+	} else {
+		res.status(200).send({ auth: false, token: undefined, username: undefined, isAdmin : false });
+	}
 });
 
 schoolMessagesSystemApp.post('/admin', function (req, res) {
-	var loggedInAdmin = systemDAO.getAdmin({username: req.body.username, password: req.body.password});
-	if(loggedInAdmin) {
-		loggedInAdmin.password = '';
-	}
+	if (!req.body.password) {
+		res.status(200).send({ auth: false, token: undefined, username: undefined, isAdmin : false });
+		return;
+	}  
 
-   	res.send(loggedInAdmin);
+	var hashedPassword = bcrypt.hashSync(req.body.password, 8);
+	var loggedInAdmin = systemDAO.getAdmin({username: req.body.username, password: hashedPassword});
+	
+	
+	if(loggedInAdmin) {
+		var token = jwt.sign({ id: loggedInAdmin.id }, config.secret, {expiresIn: 86400});
+		res.status(200).send({ auth: false, token: token, username: loggedInAdmin.username, isAdmin : true });
+	} else {
+		res.status(200).send({ auth: false, token: undefined, username: undefined, isAdmin : false });
+	}  
 });
 
 schoolMessagesSystemApp.get('/studentMessages', function (req, res) {
-   var messages = systemDAO.getStudentMessages({id:parseInt(req.query.studentId, 10)});
-   res.send(messages);
+	var token = req.headers['x-access-token'];
+	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	
+	jwt.verify(token, config.secret, function(err, decoded) {
+	  if (err) {
+		res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+	  } else {
+		decoded = parseInt(decoded, 10);
+		var foundPerson = systemDAO.getPersonById(decoded);
+		if(foundPerson && foundPerson.isAdmin === 'F') {
+			var messages = systemDAO.getStudentMessages({id:parseInt(req.query.studentId, 10)});
+   			res.send(messages);
+		} else {
+			res.status(500).send({ auth: false, message: 'Unauthorized action.' });
+		}
+	  }
+	});
 });
 
 schoolMessagesSystemApp.get('/message', function (req, res) {
-	console.log('the passed id is ', req.query.messageId);
-	var message = systemDAO.getMessage({id: parseInt(req.query.messageId, 10)});
-	console.log(message);
-   	res.send(message);
+	var token = req.headers['x-access-token'];
+	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	
+	jwt.verify(token, config.secret, function(err, decoded) {
+	  if (err) {
+		res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+	  } else {
+		decoded = parseInt(decoded, 10);
+		var foundPerson = systemDAO.getPersonById(decoded);
+		if(foundPerson && foundPerson.isAdmin === 'F') {
+			console.log('the passed id is ', req.query.messageId);
+			var message = systemDAO.getMessage({id: parseInt(req.query.messageId, 10)});
+			console.log(message[0]);
+			res.send(message);
+		} else {
+			res.status(500).send({ auth: false, message: 'Unauthorized action.' });
+		}
+	  }
+	});
 });
 
 schoolMessagesSystemApp.post('/readMessage', function (req, res) {
-	systemDAO.updateMessageToRead({id: req.body.messageId});
+	var token = req.headers['x-access-token'];
+	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	
+	jwt.verify(token, config.secret, function(err, decoded) {
+	  if (err) {
+		res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+	  } else {
+		decoded = parseInt(decoded, 10);
+		var foundPerson = systemDAO.getPersonById(decoded);
+		if(foundPerson && foundPerson.isAdmin === 'F') {
+			systemDAO.updateMessageToRead({id: req.body.messageId});
+			res.send({isError: false, message : 'A new Message Added successfully'});
+		} else {
+			res.status(500).send({ auth: false, message: 'Unauthorized action.' });
+		}
+	  }
+	});
 });
 
 schoolMessagesSystemApp.get('/students', function (req, res) {
-   res.send(systemDAO.getStudents());
+	var token = req.headers['x-access-token'];
+	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	
+	jwt.verify(token, config.secret, function(err, decoded) {
+	  if (err) {
+		res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+	  } else {
+		decoded = parseInt(decoded, 10);
+		var foundPerson = systemDAO.getPersonById(decoded);
+		if(foundPerson && foundPerson.isAdmin === 'T') {
+			res.send(systemDAO.getStudents());
+		} else {
+			res.status(500).send({ auth: false, message: 'Unauthorized action.' });
+		}
+	  }
+	});
 });
 
 schoolMessagesSystemApp.put('/student', function (req, res) {
+	console.log('here');
+	console.log(req.body);
+	if(!req.body.username || !req.body.email || !req.body.name || !req.body.password) {
+		res.status(200).send({ error: 'insufficient data' });
+		return;
+	} else {
+		var foundPerson = systemDAO.getPersonByUsername(req.body.username);
+		if(foundPerson) {
+			res.status(200).send({ error: 'username exists' });
+			return;
+		}
+	}
+	
+	var hashedPassword = bcrypt.hashSync(req.body.password, 8);
    var newlyAdded = systemDAO.addStudent({name: req.body.name, 
 			username: req.body.username, 
 			email: req.body.email, 
-			password: req.body.password});
-   if(newlyAdded) {
-   	newlyAdded.password = '';
-   }
+			password: hashedPassword});
 
-   res.send(newlyAdded);
+   //var token = jwt.sign({ id: newlyAdded.id }, config.secret, {expiresIn: 86400});
+   if (newlyAdded) {
+	res.status(200).send({ isError: false, message: 'success'});
+   } else {
+	res.status(200).send({ isError: true, message: 'failed to register new student'});
+   }
+   
 });
 
 schoolMessagesSystemApp.put('/message', function (req, res) {
-   var newlyAdded = systemDAO.addMessage({createdBy: req.body.createdBy,
-			sentTo: req.body.sentTo,
-			isRead: 'F',
-			messageContent: req.body.messageContent});
-   res.send(newlyAdded);
+	var token = req.headers['x-access-token'];
+	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	
+	jwt.verify(token, config.secret, function(err, decoded) {
+	  if (err) {
+		res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+	  } else {
+		decoded = parseInt(decoded, 10);
+		var foundPerson = systemDAO.getPersonById(decoded);
+		if(foundPerson && foundPerson.isAdmin === 'T') {
+			var newlyAdded = systemDAO.addMessage({createdBy: decoded,
+				sentTo: req.body.sentTo,
+				isRead: 'F',
+				messageContent: req.body.messageContent});
+			   res.send(newlyAdded);
+		} else {
+			res.status(500).send({ auth: false, message: 'Unauthorized action.' });
+		}
+	  }
+	});
 });
+
+schoolMessagesSystemApp.get('/me', function(req, res) {
+	var token = req.headers['x-access-token'];
+	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	
+	jwt.verify(token, config.secret, function(err, decoded) {
+	  if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+	  
+	  res.status(200).send(decoded);
+	});
+  });
 
 var server = schoolMessagesSystemApp.listen(8083, function () {
    var host = server.address().address;

@@ -15,26 +15,26 @@
 
         <form method="post" action="#">
           <div class="6u">
-            <input type="text" name="name" id="name" value="" placeholder="Name" />
+            <input type="text" name="name" id="name" [(ngModel)]="newStudent.name" placeholder="Name" />
           </div>
           <br/>
           <div class="6u">
-            <input type="text" name="username" id="username" value="" placeholder="Username" />
+            <input type="text" name="username" id="username" [(ngModel)]="newStudent.username" placeholder="Username" />
           </div>
           <br/>
           <div class="6u">
-            <input type="email" name="email" id="email" value="" placeholder="Email" />
+            <input type="email" name="email" id="email" [(ngModel)]="newStudent.email" placeholder="Email" />
           </div>
           <br/>
           <div class="6u">
-            <input type="password" name="password" id="password" value="" placeholder="Password" />
+            <input type="password" name="password" id="password" [(ngModel)]="newStudent.password" placeholder="Password" />
           </div>
           <br/>
             <div class="row uniform">
               <div class="12u$">
                 <ul class="actions">
-                  <li><input type="submit" value="Send Message" /></li>
-                  <li><input type="reset" value="Reset" class="alt" /></li>
+                  <li><input type="submit" value="Send Message" (click)="addNewStudent()"/></li>
+                  <li><input type="reset" value="Reset" class="alt" (click)="clear()" /></li>
                 </ul>
               </div>
             </div>

@@ -17,6 +17,14 @@ export class StudentsComponent implements OnInit {
   }
 
   getStudents() : void {
-    this.systemServiceService.getStudents().subscribe(students => this.systemStudents = students);
+    this.systemServiceService.getStudents().subscribe(students => this.operateReturnedValue(students));
+  }
+
+  private operateReturnedValue(returnedValue : any) : void {
+    if (returnedValue.auth == false) {
+      alert(returnedValue.message);
+    } else {
+      this.systemStudents = returnedValue;
+    }
   }
 }

@@ -16,11 +16,19 @@ export class MessagesComponent implements OnInit {
     this.studentId = this.route.snapshot.paramMap.get('studentId');
    }
 
-  ngOnInit() {
+  ngOnInit() : void {
     this.getStudentMessages();
   }
 
   getStudentMessages() : void {
-    this.theSystemService.getStudentMessages(this.studentId).subscribe(messages => this.currentMessages = messages);
+    this.theSystemService.getStudentMessages().subscribe(messages => this.currentMessages = messages);
+  }
+
+  private operateReturnedValue(returnedValue : any) : void {
+    if (returnedValue.auth == false) {
+      alert(returnedValue.message);
+    } else {
+      this.currentMessages = returnedValue;
+    }
   }
 }

@@ -35,14 +35,37 @@ export class SystemService {
 
   doAdminLogin(admin: Person):Observable<any> {
     return this.http.post<Person>(this.messagingSystemUrl+'/admin', admin, this.httpOptions)
-      .pipe(tap((returnedAdmin: Person) => this.log(`logged in w/ username=${returnedAdmin.username}`)), 
+      .pipe(tap((returnedValue: any) => this.updateHttpOptionsForLogin(returnedValue)), 
         catchError(this.handleError<Person>('doAdminLogin')));
+  };
+
+  private updateHttpOptionsForLogin(returnedValue : any) : void {
+    if(returnedValue.auth == true) {
+      this.httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json', 'x-access-token' :  returnedValue.token})};
+    } else {
+      alert('Failed To loging'); 
+    }
   };
 
   doStudentLogin(student: Person):Observable<any> {
     return this.http.post<Person>(this.messagingSystemUrl+'/student', student, this.httpOptions)
-      .pipe(tap((returnedStudent: Person) => this.log(`logged in w/ username=${returnedStudent.username}`)), 
+      .pipe(tap((returnedValue: any) => this.updateHttpOptionsForLogin(returnedValue)), 
         catchError(this.handleError<Person>('doStudentLogin')));
+  };
+
+  doLogout():Observable<any> {
+    return this.http.get<any>(`${this.messagingSystemUrl}`+'/logout')
+      .pipe(tap((returnedValue: any) => this.updateHttpOptionsForLogout(returnedValue)), catchError(this.handleError<Message>('getMessage')));
+  };
+
+  private updateHttpOptionsForLogout(returnedValue : any) : void {
+    if(returnedValue.auth == false) {
+      this.httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json'})};
+      // remove the root scope isAdmin
+      // remove the root scope username;
+    } else {
+      alert('Failed To logout'); 
+    }
   };
 
   doStudentRegister(newStudent: Person):Observable<Person> {

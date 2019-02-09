@@ -137,16 +137,17 @@ schoolMessagesSystemApp.post('/admin', function (req, res) {
 	
 	if(loggedInAdmin) {
 		var token = jwt.sign({ id: loggedInAdmin.id }, config.secret, {expiresIn: 86400});
-		res.status(200).send({ auth: false, token: token, username: loggedInAdmin.username, isAdmin : true });
+		res.status(200).send({ auth: true, token: token, username: loggedInAdmin.username, isAdmin : true });
 	} else {
 		res.status(200).send({ auth: false, token: undefined, username: undefined, isAdmin : false });
 	}  
 });
 
 schoolMessagesSystemApp.get('/studentMessages', function (req, res) {
+	console.log('trying to read the message');
 	var token = req.headers['x-access-token'];
-	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
-	
+	if (!token) return res.status(200).send({ auth: false, message: 'No token provided.' });
+	console.log('after the return');
 	jwt.verify(token, config.secret, function(err, decoded) {
 	  if (err) {
 		res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
@@ -165,7 +166,7 @@ schoolMessagesSystemApp.get('/studentMessages', function (req, res) {
 
 schoolMessagesSystemApp.get('/message', function (req, res) {
 	var token = req.headers['x-access-token'];
-	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	if (!token) return res.status(200).send({ auth: false, message: 'No token provided.' });
 	
 	jwt.verify(token, config.secret, function(err, decoded) {
 	  if (err) {
@@ -187,7 +188,7 @@ schoolMessagesSystemApp.get('/message', function (req, res) {
 
 schoolMessagesSystemApp.post('/readMessage', function (req, res) {
 	var token = req.headers['x-access-token'];
-	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	if (!token) return res.status(200).send({ auth: false, message: 'No token provided.' });
 	
 	jwt.verify(token, config.secret, function(err, decoded) {
 	  if (err) {
@@ -207,7 +208,7 @@ schoolMessagesSystemApp.post('/readMessage', function (req, res) {
 
 schoolMessagesSystemApp.get('/students', function (req, res) {
 	var token = req.headers['x-access-token'];
-	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	if (!token) return res.status(200).send({ auth: false, message: 'No token provided.' });
 	
 	jwt.verify(token, config.secret, function(err, decoded) {
 	  if (err) {
@@ -255,7 +256,7 @@ schoolMessagesSystemApp.put('/student', function (req, res) {
 
 schoolMessagesSystemApp.put('/message', function (req, res) {
 	var token = req.headers['x-access-token'];
-	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	if (!token) return res.status(200).send({ auth: false, message: 'No token provided.' });
 	
 	jwt.verify(token, config.secret, function(err, decoded) {
 	  if (err) {
@@ -278,14 +279,18 @@ schoolMessagesSystemApp.put('/message', function (req, res) {
 
 schoolMessagesSystemApp.get('/me', function(req, res) {
 	var token = req.headers['x-access-token'];
-	if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+	if (!token) return res.status(200).send({ auth: false, message: 'No token provided.' });
 	
 	jwt.verify(token, config.secret, function(err, decoded) {
-	  if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+	  if (err) return res.status(200).send({ auth: false, message: 'Failed to authenticate token.' });
 	  
 	  res.status(200).send(decoded);
 	});
   });
+
+schoolMessagesSystemApp .get('/logout', function(req, res) {
+	res.status(200).send({ auth: false, token: null });
+});
 
 var server = schoolMessagesSystemApp.listen(8083, function () {
    var host = server.address().address;

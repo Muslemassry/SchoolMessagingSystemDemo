@@ -21,7 +21,7 @@ export class MessagesComponent implements OnInit {
   }
 
   getStudentMessages() : void {
-    this.theSystemService.getStudentMessages().subscribe(messages => this.currentMessages = messages);
+    this.theSystemService.getStudentMessages().subscribe(messages => this.operateReturnedValue(messages));
   }
 
   private operateReturnedValue(returnedValue : any) : void {

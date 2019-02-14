@@ -98,6 +98,8 @@ schoolMessagesSystemApp.use(bodyParser.json());
 
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
+//console.log('awl ', bcrypt.hashSync('50000', 8));
+
 var config = require('./config');
 
 schoolMessagesSystemApp.use(function(req, res, next) {
@@ -110,17 +112,31 @@ schoolMessagesSystemApp.use(function(req, res, next) {
   // to log-in a student
 schoolMessagesSystemApp.post('/student', function (req, res) {
 	if (!req.body.password) {
+		console.log('no passed password');
 		res.status(200).send({ auth: false, token: undefined, username: undefined, isAdmin : false });
 		return;
 	}  
 
-	var hashedPassword = bcrypt.hashSync(req.body.password, 8);
-	var loggedInStudent = systemDAO.getStudent({username: req.body.username, password: hashedPassword });
-	
-	if(loggedInStudent) {
-		var token = jwt.sign({ id: loggedInStudent.id }, config.secret, {expiresIn: 86400});
-		res.status(200).send({ auth: false, token: token, username: loggedInStudent.username, isAdmin : false });
+	var foundPerson = systemDAO.getPersonByUsername(req.body.username);
+	console.log('the foundPerson is ', foundPerson);
+	if (!foundPerson || !foundPerson[0] ||foundPerson[0].isAdmin == true) {
+		res.status(200).send({ auth: false, token: undefined, username: undefined, isAdmin : false });
+		return;
+	}
+
+	foundPerson = foundPerson[0];
+	console.log('found person', foundPerson);
+	console.log('found person password is hashed', foundPerson.password);
+	console.log('sent password', req.body.password);
+	var result = bcrypt.compareSync(req.body.password, foundPerson.password);
+	console.log('result is ', result);
+	if (result == true) {
+		var token = jwt.sign({ id: foundPerson.id }, config.secret, {expiresIn: 86400});
+		console.log('FIRST');
+		console.log('send found ', foundPerson.username);
+		res.status(200).send({ auth: true, token: token, username: foundPerson.username, isAdmin : false });
 	} else {
+		console.log('NOTNOT found ');
 		res.status(200).send({ auth: false, token: undefined, username: undefined, isAdmin : false });
 	}
 });
@@ -226,14 +242,14 @@ schoolMessagesSystemApp.get('/students', function (req, res) {
 });
 
 schoolMessagesSystemApp.put('/student', function (req, res) {
-	console.log('here');
-	console.log(req.body);
 	if(!req.body.username || !req.body.email || !req.body.name || !req.body.password) {
+		console.log('insufficient data');
 		res.status(200).send({ error: 'insufficient data' });
 		return;
 	} else {
 		var foundPerson = systemDAO.getPersonByUsername(req.body.username);
-		if(foundPerson) {
+		if(foundPerson.username) {
+			console.log('FOUND ',foundPerson);
 			res.status(200).send({ error: 'username exists' });
 			return;
 		}
@@ -244,7 +260,7 @@ schoolMessagesSystemApp.put('/student', function (req, res) {
 			username: req.body.username, 
 			email: req.body.email, 
 			password: hashedPassword});
-
+		console.log('added', newlyAdded);
    //var token = jwt.sign({ id: newlyAdded.id }, config.secret, {expiresIn: 86400});
    if (newlyAdded) {
 	res.status(200).send({ isError: false, message: 'success'});

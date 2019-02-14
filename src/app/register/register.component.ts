@@ -28,7 +28,7 @@ export class RegisterComponent implements OnInit {
 
   private operateReturnedValue(returnedValue : any):void {  
     console.log(returnedValue);
-    if(returnedValue.isError == false) {
+    if(returnedValue.isError == true) {
       alert('Error in Registeration');
     } else {
       alert('Registeration is Done Successfully');

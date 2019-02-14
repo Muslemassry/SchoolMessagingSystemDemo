@@ -18,7 +18,7 @@ const routes: Routes = [
     {path: 'adminLogin', component: LoginComponent},
     {path: 'register', component: RegisterComponent},
     {path: 'students', component: StudentsComponent},
-    {path: 'messages/:studentId', component: MessagesComponent},
+    {path: 'messages', component: MessagesComponent},
     {path: 'message/:id/:username', component: MessageComponent},
     {path: 'message/:messageId', component: MessageComponent},
     {path: 'elements', component: ElementsComponent},

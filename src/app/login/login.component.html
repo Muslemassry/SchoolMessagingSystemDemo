@@ -25,8 +25,8 @@
             <div class="row uniform">
               <div class="12u$">
                 <ul class="actions">
-                    <li><input type="submit" value="Loging" (click)="doStudentLogin()" /></li>
-                  <li><input type="submit" value="Loging" (click)="doAdminLogin()" /></li>
+                  <li><input type="submit" value="Student Loging" (click)="doStudentLogin()" *ngIf="isStudentVisible"/></li>
+                  <li><input type="submit" value="Admin Loging" (click)="doAdminLogin()" *ngIf="isAdminVisible"/></li>
                   <li><input type="reset" value="Reset" class="alt" /></li>
                 </ul>
               </div>

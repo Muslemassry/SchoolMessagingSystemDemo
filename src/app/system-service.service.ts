@@ -11,8 +11,8 @@ import { catchError, map, tap } from 'rxjs/operators';
 export class SystemService {
   private messagingSystemUrl = 'http://localhost:8083';
   private httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json' })};
-  
-  
+  private isAdmin:boolean;
+  private username:string;
 
   constructor(private http: HttpClient) { }
 
@@ -42,8 +42,6 @@ export class SystemService {
   private updateHttpOptionsForLogin(returnedValue : any) : void {
     if(returnedValue.auth == true) {
       this.httpOptions = {headers: new HttpHeaders({ 'Content-Type': 'application/json', 'x-access-token' :  returnedValue.token})};
-    } else {
-      alert('Failed To loging'); 
     }
   };
 
@@ -96,6 +94,14 @@ export class SystemService {
   }
 
   private log(message: string) {
-    console.log(`HeroService: ${message}`);
+    console.log(`SystemService: ${message}`);
   };
+
+  setUsername(username:string):void{
+    this.username = username;
+  }
+
+  setIsAdmin(isAdmin:boolean):void{
+    this.isAdmin = isAdmin;
+  }
 }

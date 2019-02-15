@@ -3,7 +3,7 @@ var loki = require('lokijs');
 var db = new loki('db.json');
 
 var person = db.addCollection('person');
-person.insert({id:1, name:'Admin', username: 'admin', email: 'admin@schoolMessagesSystem', password: '1234', isAdmin: 'T'});
+person.insert({id:1, name:'Admin', username: 'admin', email: 'admin@schoolMessagesSystem', password: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwia…yMDN9.heCVGm2AoRGTxfErzYxPzCBZjek1AUU4LW4DznrWzu0', isAdmin: 'T'});
 person.insert({id:2, name:'User One', username: 'userone', email: 'userone@schoolMessagesSystem', password: '1234', isAdmin: 'F'});
 person.insert({id:3, name:'User Two', username: 'usertwo', email: 'usertwo@schoolMessagesSystem', password: '1234', isAdmin: 'F'});
 
@@ -104,7 +104,7 @@ var config = require('./config');
 
 schoolMessagesSystemApp.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-access-token");
 	res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
 	next();
   });
@@ -162,6 +162,7 @@ schoolMessagesSystemApp.post('/admin', function (req, res) {
 schoolMessagesSystemApp.get('/studentMessages', function (req, res) {
 	console.log('trying to read the message');
 	var token = req.headers['x-access-token'];
+
 	if (!token) return res.status(200).send({ auth: false, message: 'No token provided.' });
 	console.log('after the return');
 	jwt.verify(token, config.secret, function(err, decoded) {
@@ -224,15 +225,21 @@ schoolMessagesSystemApp.post('/readMessage', function (req, res) {
 
 schoolMessagesSystemApp.get('/students', function (req, res) {
 	var token = req.headers['x-access-token'];
+	console.log('the token is ', token);
 	if (!token) return res.status(200).send({ auth: false, message: 'No token provided.' });
 	
 	jwt.verify(token, config.secret, function(err, decoded) {
+		console.log('in the verify');
 	  if (err) {
 		res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
 	  } else {
+		console.log('IN THE ELSE');
+		console.log('before decoded ', decoded);
 		decoded = parseInt(decoded, 10);
+		console.log('decoded ', decoded);
 		var foundPerson = systemDAO.getPersonById(decoded);
 		if(foundPerson && foundPerson.isAdmin === 'T') {
+			decodedconsole.log('foundPerson.isAdmin ', foundPerson.isAdmin);
 			res.send(systemDAO.getStudents());
 		} else {
 			res.status(500).send({ auth: false, message: 'Unauthorized action.' });

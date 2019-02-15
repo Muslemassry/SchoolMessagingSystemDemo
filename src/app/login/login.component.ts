@@ -47,10 +47,10 @@ export class LoginComponent implements OnInit {
       this.systemService.setUsername(returnedValue.username);
       if(returnedValue.isAdmin) {
         this.systemService.setIsAdmin(true);
-        this.location.go('/students', null, null);
+        //this.location.go('students', '', null);
       } else {
         this.systemService.setIsAdmin(false);
-        this.location.go('/messages', null, null);
+        //this.location.go('messages', '', null);
       }
     } else {
       alert('Failed To loging'); 
